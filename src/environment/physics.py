@@ -52,7 +52,7 @@ class Physics:
         acceleration = self._get_acceleration(left_torque, right_torque)
         velocity = self._get_velocity(acceleration, state['velocity'])
         position = self._get_position(velocity, state['position'])
-        state['time'] += self.time_step
+        state['time'] = np.round(state['time'] + self.time_step,2)
         state['position'] = position
         state['velocity'] = velocity
         state['acceleration'] = acceleration

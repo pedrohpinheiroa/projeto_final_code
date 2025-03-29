@@ -2,13 +2,14 @@ from typing import Tuple
 
 from .state import State
 from .physics import Physics
-
+from .history import History
 
 class Seesaw():
 
-    def __init__(self, state=None, physics=None):
+    def __init__(self, state=None, physics=None, history=None):
         self.state = state or State()
         self.physics = physics or Physics()
+        self.history = history or History()
 
     def reset(self):
         self.state.reset()
@@ -21,19 +22,22 @@ class Seesaw():
         new_state = self.physics.apply_action(state, action)
         self.state.set(new_state)
 
-    def render(self):
-        pass
-
-    def close(self):
-        pass
-
-    def get_episode_history(self):
-        pass
+    def is_done(self):
+        return self.state.done
 
     def get_reward(self):
         pass
 
-    def get_done(self):
+    def save_in_history(self, state):
+        self.history.add(state)
+
+    def get_episode_history(self):
+        return self.history.get()
+
+    def render(self):
+        pass
+
+    def close(self):
         pass
 
 

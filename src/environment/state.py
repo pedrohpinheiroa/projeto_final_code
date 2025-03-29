@@ -45,21 +45,23 @@ class State:
         }
 
     def _handle_knock(self, state: Dict) -> Dict:
-        state['position'] = np.sign(state['position']) * self.max_angle
-        state['velocity'] = np.float16(0.0)
-        state['acceleration'] = np.float16(0.0)
-        state['knock'] = True
-        state['done'] = True
+        if abs(state['position']) > self.max_angle:
+            state['position'] = np.sign(state['position']) * self.max_angle
+            state['velocity'] = np.float16(0.0)
+            state['acceleration'] = np.float16(0.0)
+            state['knock'] = True
+            state['done'] = True
+
         return state
 
-    def set(self, new_state: Dict):
-        if abs(new_state['position']) > self.max_angle:
-            new_state = self._handle_knock(new_state)
+    def _handle_over_pwm(self, state: Dict) -> Dict:
+        if state['left_pwm'] > self.pwm_max or state['right_pwm'] > self.pwm_max:
+            state['over_pwm'] = True
 
-        new_state['over_pwm'] = (
-            new_state['left_pwm'] > self.pwm_max or 
-            new_state['right_pwm'] > self.pwm_max
-        )
+        return state
 
-        for key in new_state.keys():
-            setattr(self, key, new_state[key])
+    def set(self, state: Dict):
+        state = self._handle_knock(state)
+        state = self._handle_over_pwm(state)
+        for key in state.keys():
+            setattr(self, key, state[key])

@@ -1,4 +1,4 @@
-from src.environment import Seesaw
+from src.environment.virtual_enviroment import Seesaw
 from src.agent.DDPG import Agent
 
 env = Seesaw()
@@ -9,7 +9,7 @@ while not env.is_done():
     state = env.get_state()
     env.save_in_history(state)
 
-    action = (0.3, 0.0)
+    action = agent.act(state)
     env.step(action)
     
     reward = env.get_reward()
@@ -20,10 +20,5 @@ while not env.is_done():
 state = new_state
 env.save_in_history(state)
 print(env.get_episode_history())
+print(agent.get_all_experience())
 
-    # print(env.get_state())
-    # print(env.get_reward())
-    # print(env.get_done())
-    # print(env.get_episode_history())
-    # env.render()
-    # env.close()

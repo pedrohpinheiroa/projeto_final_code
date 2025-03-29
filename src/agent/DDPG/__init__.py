@@ -1,3 +1,4 @@
+import numpy as np
 from .buffer import ReplayBuffer
 
 class Agent:
@@ -11,9 +12,11 @@ class Agent:
     def sample_experience(self):
         return self.buffer.sample()
     
+    def get_all_experience(self):
+        return self.buffer.get_all()
+
     def act(self, state):
-        # Implementar a lógica de seleção de ação aqui
-        pass
+        return np.random.uniform(-0.35, 0.35, size=(2,))
 
     def learn(self):
         expperience_batch = self.sample_experience()

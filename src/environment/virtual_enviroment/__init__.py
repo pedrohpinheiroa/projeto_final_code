@@ -26,7 +26,7 @@ class Seesaw():
         return self.state.done
 
     def get_reward(self):
-        pass
+        return 0
 
     def save_in_history(self, state):
         self.history.add(state)

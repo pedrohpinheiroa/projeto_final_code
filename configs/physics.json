@@ -1,0 +1,7 @@
+{
+    "gravity":9.81,
+    "time_step":0.01,
+    "bar_mass":1.0,
+    "bar_length":1.0,
+    "motor_mass":0.6
+}

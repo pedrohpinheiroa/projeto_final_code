@@ -1,0 +1,16 @@
+- O que é RL?
+  - RL é um paradigma de aprendizado de máquina onde um agente aprende a tomar decisões interagindo com um ambiente. 
+  - O objetivo é maximizar uma recompensa cumulativa ao longo do tempo. 
+  - É como ensinar um cão a fazer truques: ele tenta ações e recebe recompensas (ou punições) até aprender a 
+  estratégia ótima.
+
+- Falar sobre ações contínuas x discretas
+  - Comparar o dqn com o ddpg
+
+- Falar sobre o deep antes do modelo de RL
+  - Um exemplo é o Q-Learning e o DQN
+
+- Exploração vs Explotação
+  - Exploração: Testar novas ações para descobrir recompensas.
+  - Explotação: Usar ações já conhecidas para maximizar recompensa imediata.
+

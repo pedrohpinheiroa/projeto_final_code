@@ -1,0 +1,5 @@
+{
+    "max_angle":20,
+    "pwm_min":0.1,
+    "pwm_max":0.3
+}

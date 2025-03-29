@@ -1,0 +1,4 @@
+{
+    "buffer_size": 100000,
+    "batch_size": 64
+}

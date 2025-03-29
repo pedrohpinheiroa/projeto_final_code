@@ -3,13 +3,15 @@ from typing import Tuple
 from .state import State
 from .physics import Physics
 from .history import History
+from .reward import Reward
 
 class Seesaw():
 
-    def __init__(self, state=None, physics=None, history=None):
+    def __init__(self, state=None, physics=None, history=None, reward=None):
         self.state = state or State()
         self.physics = physics or Physics()
         self.history = history or History()
+        self.reward = reward or Reward()
 
     def reset(self):
         self.state.reset()
@@ -26,7 +28,8 @@ class Seesaw():
         return self.state.done
 
     def get_reward(self):
-        return 0
+        state = self.get_state()
+        return self.reward.get(state)
 
     def save_in_history(self, state):
         self.history.add(state)

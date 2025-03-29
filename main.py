@@ -16,9 +16,8 @@ while not env.is_done():
     new_state = env.get_state()
     done = env.is_done()
     agent.add_experience(state, action, reward, new_state, done)
+    print(new_state, reward, action)
 
 state = new_state
 env.save_in_history(state)
-print(env.get_episode_history())
-print(agent.get_all_experience())
 

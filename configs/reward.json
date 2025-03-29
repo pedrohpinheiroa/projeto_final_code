@@ -1,0 +1,8 @@
+{
+    "position_weight": 1.0,
+    "velocity_weight": 0.5,
+    "knock_penalty": -100.0,
+    "over_pwm_penalty": -50.0,
+    "stability_reward": 10.0,
+    "stability_threshold": 0.01
+}

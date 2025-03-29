@@ -57,7 +57,8 @@ class State:
     def _handle_over_pwm(self, state: Dict) -> Dict:
         if state['left_pwm'] > self.pwm_max or state['right_pwm'] > self.pwm_max:
             state['over_pwm'] = True
-
+        else:
+            state['over_pwm'] = False
         return state
 
     def set(self, state: Dict):

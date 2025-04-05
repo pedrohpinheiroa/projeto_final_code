@@ -14,3 +14,5 @@
   - Exploração: Testar novas ações para descobrir recompensas.
   - Explotação: Usar ações já conhecidas para maximizar recompensa imediata.
 
+
+https://spinningup.openai.com/en/latest/algorithms/ddpg.html#id5

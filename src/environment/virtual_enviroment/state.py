@@ -18,6 +18,7 @@ class State:
         self.max_angle = np.round(np.radians(self.configs['max_angle']),2)
         self.pwm_min = self.configs['pwm_min']
         self.pwm_max = self.configs['pwm_max']
+        self.max_episode_time = self.configs['max_episode_time']
 
     def reset(self):
         self.time = np.float16(0.0)
@@ -61,8 +62,15 @@ class State:
             state['over_pwm'] = False
         return state
 
+    def _handle_episode_time(self, state: Dict) -> Dict:
+        if state['time'] > self.max_episode_time:
+            state['done'] = True
+        return state
+
+
     def set(self, state: Dict):
         state = self._handle_knock(state)
         state = self._handle_over_pwm(state)
+        state = self._handle_episode_time(state)
         for key in state.keys():
             setattr(self, key, state[key])

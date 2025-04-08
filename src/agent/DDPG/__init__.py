@@ -47,8 +47,9 @@ class Agent:
         target_q_values = np.array([self.critic.target_predict(next_states[i], target_actions[i])[0] for i in range(len(experiences))])
         target_q = rewards + (1 - dones) * self.gamma * target_q_values
 
-        self.critic.train(states, actions, target_q)
-        self.actor.train(states, self.critic.model)
+        critic_loss = self.critic.train(states, actions, target_q)
+        actor_loss = self.actor.train(states, self.critic.model)
 
         self.actor.update_target()
         self.critic.update_target()
+        return critic_loss, actor_loss

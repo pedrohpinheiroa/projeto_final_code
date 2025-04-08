@@ -7,10 +7,10 @@ import tensorflow as tf
 class Writer:
     '''Responsável por criar o summary_writer e atualiza-lo a cada passo.'''
 
-    def __init__(self, name):
+    def __init__(self):
         self.read_configs()
         self.set_configs()
-        self.summary_writer = tf.summary.create_file_writer(self.log_dir + '/' + name)
+        self.summary_writer = tf.summary.create_file_writer(self.log_dir + '/' + self.name)
         self.summary_writer.set_as_default()
 
     def read_configs(self):

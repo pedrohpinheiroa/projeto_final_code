@@ -71,6 +71,7 @@ class Actor:
         gradients = tape.gradient(loss, self.model.trainable_variables)
         gradients = [tf.clip_by_value(grad, -1.0, 1.0) for grad in gradients]  # Clipping
         self.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
+        return loss.numpy()
         
 
 

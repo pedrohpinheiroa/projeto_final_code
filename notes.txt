@@ -17,4 +17,3 @@
 
 https://spinningup.openai.com/en/latest/algorithms/ddpg.html#id5
 https://pt.wikipedia.org/wiki/Processo_Ornstein%E2%80%93Uhlenbeck
-Teste

@@ -72,6 +72,16 @@ class Actor:
         gradients = [tf.clip_by_value(grad, -1.0, 1.0) for grad in gradients]  # Clipping
         self.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
         return loss.numpy()
+    
+    def save(self, filename):
+        """Salva os pesos do modelo."""
+        self.model.save_weights(filename)
+        self.target_model.save_weights(filename)
+    
+    def load(self, filename):
+        """Carrega os pesos do modelo."""
+        self.model.load_weights(filename)
+        self.target_model.load_weights(filename)
         
 
 
@@ -144,3 +154,12 @@ class Critic:
         """Treina o crítico usando mini-batch."""
         return self.model.train_on_batch([states, actions], target_q_values)
 
+    def save(self, filename):
+        """Salva os pesos do modelo."""
+        self.model.save_weights(filename)
+        self.target_model.save_weights(filename)
+    
+    def load(self, filename):
+        """Carrega os pesos do modelo."""
+        self.model.load_weights(filename)
+        self.target_model.load_weights(filename)

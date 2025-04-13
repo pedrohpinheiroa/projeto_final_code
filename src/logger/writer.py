@@ -19,7 +19,7 @@ class Writer:
 
     def set_configs(self):
         self.log_dir = self.configs['log_dir']
-        self.name = time()
+        self.name = str(time())
         
     def write_scalar(self, tag, value, episode):
         '''Escreve um valor escalar no summary.'''

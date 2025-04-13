@@ -1,3 +1,4 @@
+import time
 import numpy as np
 from .buffer import ReplayBuffer
 from .noise import OUNoise
@@ -30,11 +31,11 @@ class Agent:
         if add_noise:
             noise = self.noise.sample()
             action = np.clip(action + noise, -self.actor.action_bound, self.actor.action_bound)
-        return action
+        return action, noise
 
     def learn(self):
         if len(self.buffer) < self.buffer.batch_size:
-            return
+            return (0, 0)
         
         experiences = self.sample_experiences()
         states = np.array([exp[0] for exp in experiences])
@@ -53,3 +54,12 @@ class Agent:
         self.actor.update_target()
         self.critic.update_target()
         return critic_loss, actor_loss
+
+    def save(self):
+        filename = f"models/ddpg_actor_{int(time.time())}.weights.h5"
+        self.actor.save(filename)
+        self.critic.save(filename)
+    
+    def load(self, filename):
+        self.actor.load(filename)
+        self.critic.load(filename)

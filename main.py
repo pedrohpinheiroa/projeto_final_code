@@ -1,6 +1,3 @@
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 import time
 from src.environment.virtual_enviroment import Seesaw
 from src.agent.DDPG import Agent
@@ -17,8 +14,7 @@ for episode in range(EPISODES):
     
     while not env.is_done():
         state = env.get_state()
-        if episode == 1:
-            print(state)
+        print(f"Episode {episode}| Virtual Time: {state['time']:.4f}s| Position: {state['position']:.2f}", end=("\r"))
         action, noise = agent.act(state)
         env.step(action)
         reward = env.get_reward()
@@ -47,4 +43,5 @@ for episode in range(EPISODES):
     logger.reset()
     if episode % 10 == 0:
         agent.save()
-    print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s")
+    
+    print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s. Total Virtual Time: {state['time']:.4f}s Final Position: {state['position']:.4f}", end=("\n"))

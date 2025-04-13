@@ -34,18 +34,27 @@ class Agent:
         return action, noise
 
     def learn(self):
-        if len(self.buffer) < self.buffer.batch_size:
+        batch_size = self.buffer.batch_size
+        if len(self.buffer) < batch_size:
             return (0, 0)
         
         experiences = self.sample_experiences()
-        states = np.array([exp[0] for exp in experiences])
-        actions = np.array([exp[1] for exp in experiences])
-        rewards = np.array([exp[2] for exp in experiences])
-        next_states = np.array([exp[3] for exp in experiences])
-        dones = np.array([exp[4] for exp in experiences])
+        states = np.zeros((batch_size, self.actor.input_dimension), dtype=np.float32)
+        actions = np.zeros((batch_size, self.actor.action_dim), dtype=np.float32)
+        rewards = np.zeros(batch_size, dtype=np.float32)
+        next_states = np.zeros((batch_size, self.actor.input_dimension), dtype=np.float32)
+        dones = np.zeros(batch_size, dtype=np.float32)
+        
+        # Preencher arrays sem loops de compreensão
+        for i, exp in enumerate(experiences):
+            states[i] = exp[0]
+            actions[i] = exp[1]
+            rewards[i] = exp[2]
+            next_states[i] = exp[3]
+            dones[i] = exp[4]
 
-        target_actions = np.array([self.actor.target_predict(next_state) for next_state in next_states])
-        target_q_values = np.array([self.critic.target_predict(next_states[i], target_actions[i])[0] for i in range(len(experiences))])
+        target_actions = self.actor.target_model.predict(next_states, batch_size=batch_size, verbose=0)
+        target_q_values = self.critic.target_model.predict([next_states, target_actions], batch_size=batch_size, verbose=0).flatten()
         target_q = rewards + (1 - dones) * self.gamma * target_q_values
 
         critic_loss = self.critic.train(states, actions, target_q)

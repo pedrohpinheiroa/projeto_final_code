@@ -39,12 +39,18 @@ class Actor:
     
     def predict(self, state):
         """Prediz a ação para um estado."""
-        state_array = np.array([state])
+        if not isinstance(state, np.ndarray) or state.ndim == 1:
+            state_array = np.array([state], dtype=np.float32)
+        else:
+            state_array = state.astype(np.float32)
         return self.model.predict(state_array, verbose=0)[0]
-    
+
     def target_predict(self, state):
         """Prediz a ação usando o modelo alvo."""
-        state_array = np.array([state])
+        if not isinstance(state, np.ndarray) or state.ndim == 1:
+            state_array = np.array([state], dtype=np.float32)
+        else:
+            state_array = state.astype(np.float32)
         return self.target_model.predict(state_array, verbose=0)[0]
     
     def update_target(self):
@@ -130,14 +136,30 @@ class Critic:
     
     def predict(self, state, action):
         """Prediz o Q-valor para um par estado-ação."""
-        state_array = np.array([state])
-        action_array = np.array([action])
+        if not isinstance(state, np.ndarray) or state.ndim == 1:
+            state_array = np.array([state], dtype=np.float32)
+        else:
+            state_array = state.astype(np.float32)
+            
+        if not isinstance(action, np.ndarray) or action.ndim == 1:
+            action_array = np.array([action], dtype=np.float32)
+        else:
+            action_array = action.astype(np.float32)
+            
         return self.model.predict([state_array, action_array], verbose=0)[0]
-    
+
     def target_predict(self, state, action):
         """Prediz o Q-valor usando o modelo alvo."""
-        state_array = np.array([state])
-        action_array = np.array([action])
+        if not isinstance(state, np.ndarray) or state.ndim == 1:
+            state_array = np.array([state], dtype=np.float32)
+        else:
+            state_array = state.astype(np.float32)
+            
+        if not isinstance(action, np.ndarray) or action.ndim == 1:
+            action_array = np.array([action], dtype=np.float32)
+        else:
+            action_array = action.astype(np.float32)
+            
         return self.target_model.predict([state_array, action_array], verbose=0)[0]
     
     def update_target(self, tau=0.001):

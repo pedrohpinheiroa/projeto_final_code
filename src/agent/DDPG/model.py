@@ -79,15 +79,14 @@ class Actor:
         self.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
         return loss.numpy()
     
-    def save(self, filename):
+    def save(self, base_filename):
         """Salva os pesos do modelo."""
+        filename = f"{base_filename}_actor.weights.h5"
         self.model.save_weights(filename)
-        self.target_model.save_weights(filename)
     
     def load(self, filename):
         """Carrega os pesos do modelo."""
         self.model.load_weights(filename)
-        self.target_model.load_weights(filename)
         
 
 
@@ -176,12 +175,11 @@ class Critic:
         """Treina o crítico usando mini-batch."""
         return self.model.train_on_batch([states, actions], target_q_values)
 
-    def save(self, filename):
+    def save(self, base_filename):
         """Salva os pesos do modelo."""
+        filename = f"{base_filename}_critic.weights.h5"
         self.model.save_weights(filename)
-        self.target_model.save_weights(filename)
     
     def load(self, filename):
         """Carrega os pesos do modelo."""
         self.model.load_weights(filename)
-        self.target_model.load_weights(filename)

@@ -65,9 +65,9 @@ class Agent:
         return critic_loss, actor_loss
 
     def save(self):
-        filename = f"models/ddpg_actor_{int(time.time())}.weights.h5"
-        self.actor.save(filename)
-        self.critic.save(filename)
+        base_filename = f"models/{int(time.time())}"
+        self.actor.save(base_filename)
+        self.critic.save(base_filename)
     
     def load(self, filename):
         self.actor.load(filename)

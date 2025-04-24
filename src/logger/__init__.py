@@ -31,11 +31,11 @@ class Logger:
         self.writer.write_scalar('Episode Duration (Virtual)', virtual_episode_duration, episode)
         self.writer.write_scalar('Episode Duration (Real)', real_episode_duration, episode)
 
-        total_reward = self.metrics.total_reward(self.episode_data)
-        self.writer.write_scalar('Total Reward', total_reward, episode)
+        mean_reward = self.metrics.mean_reward(self.episode_data)
+        self.writer.write_scalar('Mean Reward', mean_reward, episode)
 
-        best_reward = self.metrics.best_reward(total_reward)
-        self.writer.write_scalar('Best Reward', best_reward, episode)
+        best_mean_reward = self.metrics.best_mean_reward(mean_reward)
+        self.writer.write_scalar('Best Mean Reward', best_mean_reward, episode)
 
         critic_loss, actor_loss = self.metrics.loss(self.episode_data)
         self.writer.write_scalar('Total Critic Loss', critic_loss, episode)

@@ -15,6 +15,7 @@ class Seesaw():
 
     def reset(self):
         self.state.reset()
+        self.history.clear()
 
     def get_state(self):
         return self.state.get()

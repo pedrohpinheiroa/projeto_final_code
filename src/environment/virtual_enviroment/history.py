@@ -1,7 +1,7 @@
 class History:
 
     def __init__(self):
-        self.history = []
+        self.clear()
 
     def __len__(self):
         return len(self.history)

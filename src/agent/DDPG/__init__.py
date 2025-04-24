@@ -28,6 +28,7 @@ class Agent:
     def act(self, state, add_noise=True):
         state = (state.get('position'), state.get('velocity'))
         action = self.actor.predict(state)
+        noise = (0,0)
         if add_noise:
             noise = self.noise.sample()
             action = np.clip(action + noise, -self.actor.action_bound, self.actor.action_bound)

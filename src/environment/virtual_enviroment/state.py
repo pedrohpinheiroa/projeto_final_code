@@ -21,12 +21,12 @@ class State:
         self.max_episode_time = self.configs['max_episode_time']
 
     def reset(self):
-        self.time = np.float16(0.0)
+        self.time = np.int32(0)
         self.position = np.random.choice([-self.max_angle, self.max_angle])
-        self.velocity = np.float16(0.0)
-        self.acceleration = np.float16(0.0)
-        self.left_pwm = np.float16(self.pwm_min)
-        self.right_pwm = np.float16(self.pwm_min)
+        self.velocity = np.float32(0.0)
+        self.acceleration = np.float32(0.0)
+        self.left_pwm = np.float32(self.pwm_min)
+        self.right_pwm = np.float32(self.pwm_min)
 
         self.knock = False
         self.over_pwm = False

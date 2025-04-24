@@ -40,10 +40,12 @@ class Physics:
         return np.round(torque / self.inertia,1)
     
     def _get_velocity(self, acceleration: float, velocity: float)->float:
-        return np.round(velocity + acceleration * self.time_step, 3)
+        time_step = self.time_step/1000
+        return np.round(velocity + acceleration * time_step, 3)
     
     def _get_position(self, velocity: float, position: float)->float:
-        return np.round(position + velocity * self.time_step, 4)
+        time_step = self.time_step/1000
+        return np.round(position + velocity * time_step, 4)
     
     def apply_action(self, state:Dict, action: Tuple[float, float]):
         left_pwm, right_pwm = action
@@ -52,7 +54,7 @@ class Physics:
         acceleration = self._get_acceleration(left_torque, right_torque)
         velocity = self._get_velocity(acceleration, state['velocity'])
         position = self._get_position(velocity, state['position'])
-        state['time'] = np.round(state['time'] + self.time_step,2)
+        state['time'] = state['time'] + self.time_step
         state['position'] = position
         state['velocity'] = velocity
         state['acceleration'] = acceleration

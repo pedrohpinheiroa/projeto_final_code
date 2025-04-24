@@ -1,21 +1,48 @@
+# Preciso tratar o tempo em Miliseconds. Isso vai reduzir o erro matemático dos binários.
+# Talvez isso corrija o bug da duração máxima do episódio ser 8 segundos, com tempos de execução tão divergentes.
+import os
+import json
 import time
 from src.environment.virtual_enviroment import Seesaw
 from src.agent.DDPG import Agent
 from src.logger import Logger
 
+def create_checkpoint(agent:Agent):
+    DIR = "./checkpoint"
+    agent.actor.model.save_weights(f"{DIR}/actor_model.weights.h5")
+    agent.actor.target_model.save_weights(f"{DIR}/actor_target.weights.h5")
+    agent.critic.model.save_weights(f"{DIR}/critic_model.weights.h5")
+    agent.critic.target_model.save_weights(f"{DIR}/critic_target.weights.h5")
+
+def load_checkpoint(agent:Agent):
+    DIR = "./checkpoint"
+    try:
+        agent.actor.model.load_weights(f"{DIR}/actor_model.weights.h5")
+        agent.actor.target_model.load_weights(f"{DIR}/actor_target.weights.h5")
+        agent.critic.model.load_weights(f"{DIR}/critic_model.weights.h5")
+        agent.critic.target_model.load_weights(f"{DIR}/critic_target.weights.h5")
+    except:
+        pass
+    finally:
+        return agent
+
+
 env = Seesaw()
 agent = Agent()
 logger = Logger()
+agent = load_checkpoint(agent)
 
-EPISODES = 1000
+EPISODES = 100_000
 for episode in range(EPISODES):
     episode_start = time.time()
     env.reset()
     
+    add_noise = True
+    if episode > 0 and episode % 100 == 0:
+        add_noise = False
     while not env.is_done():
         state = env.get_state()
-        print(f"Episode {episode}| Virtual Time: {state['time']:.4f}s| Position: {state['position']:.2f}", end=("\r"))
-        action, noise = agent.act(state)
+        action, noise = agent.act(state, add_noise=add_noise)
         env.step(action)
         reward = env.get_reward()
         next_state = env.get_state()
@@ -41,7 +68,9 @@ for episode in range(EPISODES):
         virtual_episode_duration = next_state['time'],
     )
     logger.reset()
-    if episode % 10 == 0:
+    if episode % 50 == 0 and episode > 0:
         agent.save()
     
-    print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s. Total Virtual Time: {state['time']:.4f}s Final Position: {state['position']:.4f}", end=("\n"))
+    create_checkpoint(agent)
+    
+    print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s. Total Virtual Time: {state['time']/1000:.4f}s Final Position: {state['position']:.4f}", end=("\n"))

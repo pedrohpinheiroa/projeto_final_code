@@ -130,7 +130,7 @@ class Critic:
         
         outputs = layers.Dense(1)(x)  # Q-valor
         model = models.Model([state_input, action_input], outputs)
-        model.compile(optimizer=optimizers.Adam(0.001), loss='mse')
+        model.compile(optimizer=optimizers.Adam(0.0001, clipnorm=1.0), loss='mse')
         return model
     
     def predict(self, state, action):

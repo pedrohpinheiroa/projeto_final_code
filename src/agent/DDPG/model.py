@@ -77,7 +77,8 @@ class Actor:
         gradients = tape.gradient(loss, self.model.trainable_variables)
         gradients = [tf.clip_by_value(grad, -1.0, 1.0) for grad in gradients]  # Clipping
         self.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
-        return loss.numpy()
+        gradients_norm = np.linalg.norm([np.linalg.norm(grad) for grad in gradients])
+        return loss.numpy(), gradients_norm
     
     def save(self, base_filename):
         """Salva os pesos do modelo."""
@@ -173,7 +174,9 @@ class Critic:
     
     def train(self, states, actions, target_q_values):
         """Treina o crítico usando mini-batch."""
-        return self.model.train_on_batch([states, actions], target_q_values)
+        critic_loss = self.model.train_on_batch([states, actions], target_q_values)
+        q_values = self.model.predict([states, actions], verbose=0)
+        return critic_loss, np.mean(q_values)
 
     def save(self, base_filename):
         """Salva os pesos do modelo."""

@@ -44,14 +44,16 @@ for episode in range(EPISODES):
         reward = env.get_reward()
         next_state = env.get_state()
         done = env.is_done()
-        critic_loss, actor_loss = agent.learn()
+        critic_loss, q_values, actor_loss, actor_gradient = agent.learn()
         
         env.save_in_history(state)
         agent.add_experience(state, action, reward, next_state, done)
         logger.add_information(
             reward=reward,
             critic_loss=critic_loss,
+            q_value=q_values,
             actor_loss=actor_loss,
+            actor_gradient=actor_gradient,
             noise=noise,
             position = state['position'],
             velocity = state['velocity'],

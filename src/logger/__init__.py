@@ -13,16 +13,20 @@ class Logger:
         self.episode_data = {
             'reward':[],
             'critic_loss':[],
+            'q_values':[],
             'actor_loss':[],
+            'actor_gradient':[],
             'noise':[],
             'position':[],
             'velocity':[],
         }
 
-    def add_information(self, reward, critic_loss, actor_loss, noise, position, velocity):
+    def add_information(self, reward, critic_loss, q_value, actor_loss, actor_gradient, noise, position, velocity):
         self.episode_data['reward'].append(reward)
         self.episode_data['critic_loss'].append(critic_loss)
+        self.episode_data['q_values'].append(q_value)
         self.episode_data['actor_loss'].append(actor_loss)
+        self.episode_data['actor_gradient'].append(actor_gradient)
         self.episode_data['noise'].append(sum(noise) / len(noise))
         self.episode_data['position'].append(position)
         self.episode_data['velocity'].append(velocity)

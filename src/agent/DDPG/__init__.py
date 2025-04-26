@@ -58,12 +58,12 @@ class Agent:
         target_q_values = self.critic.target_model.predict([next_states, target_actions], batch_size=batch_size, verbose=0).flatten()
         target_q = rewards + (1 - dones) * self.gamma * target_q_values
 
-        critic_loss = self.critic.train(states, actions, target_q)
-        actor_loss = self.actor.train(states, self.critic.model)
+        critic_loss, q_value = self.critic.train(states, actions, target_q)
+        actor_loss, actor_gradient = self.actor.train(states, self.critic.model)
 
         self.actor.update_target()
         self.critic.update_target()
-        return critic_loss, actor_loss
+        return critic_loss, q_value, actor_loss, actor_gradient
 
     def save(self):
         base_filename = f"models/{int(time.time())}"

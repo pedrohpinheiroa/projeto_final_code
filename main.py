@@ -37,12 +37,9 @@ for episode in range(EPISODES):
     episode_start = time.time()
     env.reset()
     
-    add_noise = True
-    if episode > 0 and episode % 100 == 0:
-        add_noise = False
     while not env.is_done():
         state = env.get_state()
-        action, noise = agent.act(state, add_noise=add_noise)
+        action, noise = agent.act(state)
         env.step(action)
         reward = env.get_reward()
         next_state = env.get_state()

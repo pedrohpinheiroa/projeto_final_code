@@ -1,7 +1,7 @@
 {
     "ou_noise": {
-        "theta": 0.15,
+        "theta": 0.01,
         "mu": 0,
-        "sigma": 0.3
+        "sigma": 0.005
     }
 }

@@ -1,9 +1,10 @@
 import json
 from typing import List, Tuple
 
+import keras
 import tensorflow as tf
 import numpy as np
-from keras import layers, models, optimizers
+from keras import layers, optimizers
 
 class Actor:
     """Rede neural do ator que mapeia estados para ações."""
@@ -19,7 +20,7 @@ class Actor:
         self.model = self._build_model()
         self.target_model = self._build_model()
         self.target_model.set_weights(self.model.get_weights())
-        self.optimizer = optimizers.Adam(0.0001)
+        self.optimizer = optimizers.Adam(self.configs['actor_learning_rate'])
 
     def read_configs(self):
         with open('configs/model.json', 'r') as file:
@@ -34,7 +35,7 @@ class Actor:
         outputs = layers.Dense(self.action_dim, activation='tanh')(x)
         outputs = outputs * self.action_bound
         
-        model = models.Model(inputs=inputs, outputs=outputs)
+        model = keras.Model(inputs=inputs, outputs=outputs)
         return model
     
     def predict(self, state):
@@ -63,23 +64,6 @@ class Actor:
         
         self.target_model.set_weights(target_weights)
     
-    def train(self, states, critic_model):
-        """Treina o ator usando mini-batch."""
-        states = tf.convert_to_tensor(states, dtype=tf.float32)
-        
-        with tf.GradientTape() as tape:
-            # Gera ações e avalia com o crítico
-            actions = self.model(states)
-            q_values = critic_model([states, actions])
-            loss = -tf.reduce_mean(q_values)  # Maximiza Q-values
-            
-        # Calcula e aplica gradientes
-        gradients = tape.gradient(loss, self.model.trainable_variables)
-        gradients = [tf.clip_by_value(grad, -1.0, 1.0) for grad in gradients]  # Clipping
-        self.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
-        gradients_norm = np.linalg.norm([np.linalg.norm(grad) for grad in gradients])
-        return loss.numpy(), gradients_norm
-    
     def save(self, base_filename):
         """Salva os pesos do modelo."""
         filename = f"{base_filename}_actor.weights.h5"
@@ -102,6 +86,7 @@ class Critic:
         self.action_hidden_layers = self.configs['critic_action_hidden_layers']
         self.hidden_layers = self.configs['critic_hidden_layers']
         self.tau = self.configs['polyak_averaging_tau']
+        self.optimizer = optimizers.Adam(self.configs['critic_learning_rate'])
 
         self.model = self._build_model()
         self.target_model = self._build_model()
@@ -130,8 +115,7 @@ class Critic:
             x = layers.Dense(units, activation='relu')(x)
         
         outputs = layers.Dense(1)(x)  # Q-valor
-        model = models.Model([state_input, action_input], outputs)
-        model.compile(optimizer=optimizers.Adam(0.0001, clipnorm=1.0), loss='mse')
+        model = keras.Model([state_input, action_input], outputs)
         return model
     
     def predict(self, state, action):
@@ -162,7 +146,7 @@ class Critic:
             
         return self.target_model.predict([state_array, action_array], verbose=0)[0]
     
-    def update_target(self, tau=0.001):
+    def update_target(self):
         """Atualiza os pesos do modelo alvo usando soft update."""
         weights = self.model.get_weights()
         target_weights = self.target_model.get_weights()
@@ -172,11 +156,18 @@ class Critic:
         
         self.target_model.set_weights(target_weights)
     
+    @tf.function
     def train(self, states, actions, target_q_values):
         """Treina o crítico usando mini-batch."""
-        critic_loss = self.model.train_on_batch([states, actions], target_q_values)
-        q_values = self.model.predict([states, actions], verbose=0)
-        return critic_loss, np.mean(q_values)
+        with tf.GradientTape() as tape:
+            q_values = self.model([states, actions], training=True)  # Q-values atuais
+            loss = tf.keras.losses.MSE(target_q_values, q_values)    # Cálculo da perda
+        
+        gradients = tape.gradient(loss, self.model.trainable_variables)
+        gradients, _ = tf.clip_by_global_norm(gradients, clip_norm=0.5)  # Norma máxima = 1.0
+        self.model.optimizer.apply_gradients(zip(gradients, self.model.trainable_variables))
+        gradient_norm = tf.linalg.global_norm(gradients).numpy()
+        return loss.numpy(), np.mean(q_values), gradient_norm
 
     def save(self, base_filename):
         """Salva os pesos do modelo."""

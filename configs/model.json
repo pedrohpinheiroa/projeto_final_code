@@ -2,9 +2,11 @@
     "input_dimension": 2,
     "action_dimension": 2,
     "action_bound":0.35,
-    "polyak_averaging_tau":0.01,
-    "actor_hidden_layers":[256, 128, 64],
+    "polyak_averaging_tau":0.005,
+    "critic_learning_rate":0.002,
+    "actor_learning_rate":0.001,
+    "actor_hidden_layers":[256, 256],
     "critic_state_hidden_layers":[16, 32],
     "critic_action_hidden_layers":[32],
-    "critic_hidden_layers":[256, 128]
+    "critic_hidden_layers":[256, 256]
 }

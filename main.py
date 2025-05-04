@@ -45,7 +45,9 @@ for episode in range(EPISODES):
         virtual_episode_duration = next_state['time'],
     )
     logger.reset()
-    if episode % 50 == 0 and episode > 0:
-        agent.save()
-        
+    if episode % 1000 == 0 and episode > 0:
+        agent.noise_decay()
+    
     print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s. Total Virtual Time: {state['time']/1000:.4f}s Final Position: {state['position']:.4f}", end=("\n"))
+
+agent.save()

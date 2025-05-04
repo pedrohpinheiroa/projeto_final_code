@@ -2,6 +2,9 @@
     "ou_noise": {
         "theta": 0.01,
         "mu": 0,
-        "sigma": 0.005
+        "sigma": 0.005,
+        "inicial_decay_factor":1.0,
+        "minimum_decay_factor": 0.05,
+        "iterations_to_minimum": 9500
     }
 }

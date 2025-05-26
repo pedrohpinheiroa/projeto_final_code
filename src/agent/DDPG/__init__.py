@@ -14,7 +14,7 @@ class Agent:
         self.actor = Actor()
         self.critic = Critic()
         self.noise = OUNoise(action_dimension=self.critic.action_dimension)
-        self.gamma = 0.95
+        self.gamma = 0.90
 
     def reset(self):
         self.noise.reset()
@@ -27,6 +27,9 @@ class Agent:
     
     def get_all_experience(self):
         return self.buffer.get_all()
+    
+    def decay_noise(self):
+        self.noise.decay()
 
     def act(self, state, add_noise=True):
         state = (state.get('position'), state.get('velocity'))
@@ -41,7 +44,7 @@ class Agent:
     def update_models(self, states, actions, rewards, next_states, dones):
         with tf.GradientTape() as tape:
             target_actions = self.actor.target_model(next_states, training=True)
-            y = rewards + self.gamma * self.critic.target_model(
+            y = rewards + (1 - dones) * self.gamma * self.critic.target_model(
                 [next_states, target_actions], training=True
             )
             critic_value = self.critic.model([states, actions], training=True)

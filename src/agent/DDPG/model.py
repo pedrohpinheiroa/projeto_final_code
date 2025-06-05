@@ -37,8 +37,9 @@ class Actor:
         for units in self.hidden_layers:
             x = layers.Dense(units, activation='relu')(x)
 
-        outputs = layers.Dense(self.action_dim, activation='tanh')(x)
-        outputs = outputs * self.action_bound
+        # Using sigmoid activation to get outputs between 0 and 1, then scaling
+        outputs = layers.Dense(self.action_dim, activation='sigmoid')(x)
+        outputs = outputs * self.action_bound + 0.1
         
         model = keras.Model(inputs=inputs, outputs=outputs)
         return model

@@ -1,10 +1,10 @@
 {
     "ou_noise": {
-        "theta": 0.01,
+        "theta": 0.15,
         "mu": 0,
-        "sigma": 0.005,
+        "sigma": 0.2,
         "inicial_decay_factor":1.0,
-        "min_decay_factor": 0.05,
-        "iterations_to_minimum": 9500
+        "min_decay_factor": 0.01,
+        "iterations_to_minimum": 10000
     }
 }

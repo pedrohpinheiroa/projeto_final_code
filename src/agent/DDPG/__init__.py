@@ -14,7 +14,7 @@ class Agent:
         self.actor = Actor()
         self.critic = Critic()
         self.noise = OUNoise(action_dimension=self.critic.action_dimension)
-        self.gamma = 0.90
+        self.gamma = 0.9
 
     def reset(self):
         self.noise.reset()
@@ -37,7 +37,9 @@ class Agent:
         noise = (0,0)
         if add_noise:
             noise = self.noise.sample()
-            action = np.clip(action + noise, -self.actor.action_bound, self.actor.action_bound)
+            action = np.clip(action + noise, 0.1, self.actor.action_bound + 0.1)
+        
+        action = np.round(action, 4)
         return action, noise
 
     @tf.function
@@ -51,6 +53,8 @@ class Agent:
             critic_loss = keras.ops.mean(keras.ops.square(y - critic_value))
 
         critic_grad = tape.gradient(critic_loss, self.critic.model.trainable_variables)
+        critic_grad, _ = tf.clip_by_global_norm(critic_grad, clip_norm=0.5)  # TESTE Norma máxima = 1.0
+
         self.critic.optimizer.apply_gradients(
             zip(critic_grad, self.critic.model.trainable_variables)
         )
@@ -103,8 +107,11 @@ class Agent:
         self.critic.update_target()
         return critic_loss, critic_gradient, predict_q, target_q_values, actor_loss, actor_gradient
 
-    def save(self):
-        base_filename = f"models/{int(time.time())}"
+    def save(self, filename=None):
+        if filename:
+            base_filename = f"models/{filename}"
+        else:
+            base_filename = f"models/{int(time.time())}"
         self.actor.save(base_filename)
         # self.critic.save(base_filename)
     

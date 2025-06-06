@@ -1,16 +1,31 @@
 import time
 
+import numpy as np
 import tensorflow as tf
+
 from src.environment.virtual_enviroment import Seesaw
 from src.agent.DDPG import Agent
 from src.logger import Logger
 
+def _render_current_model(agent):
+    env = Seesaw()
+    env.reset()
+    env.render()
+    while not env.is_done():
+        action, _ = agent.act(env.get_state(), add_noise=False)
+        env.step(action)
+        env.render()
+    print(f"Final Position: {env.get_state()['position']:.4f}, Final Velocity: {env.get_state()['velocity']:.4f}, Final Time: {env.get_state()['time']:.4f}")
+    env.close()
+
 def main():
+    RENDER_SIMULATION = False
+    RENDER_EVERY = 100
+    EPISODES = 50_000
+
     env = Seesaw()
     agent = Agent()
     logger = Logger()
-
-    EPISODES = 10_000
     for episode in range(EPISODES):
         episode_start = time.time()
         env.reset()
@@ -50,9 +65,14 @@ def main():
         agent.decay_noise()
         
         print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s. Total Virtual Time: {state['time']/1000:.4f}s Final Position: {state['position']:.4f}", end=("\n"))
+        if RENDER_SIMULATION and episode % RENDER_EVERY == 0:
+            print("Rendering current model...")
+            _render_current_model(agent)
+            print("Rendering completed.")
 
-    agent.save()
+        agent.save("current_model_training")
 
 if __name__ == "__main__":
     with tf.device('/CPU:0'):
         main()
+    # main()

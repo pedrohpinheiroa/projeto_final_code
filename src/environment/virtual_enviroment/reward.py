@@ -4,7 +4,8 @@ from typing import Dict
 
 class Reward:
     
-    def __init__(self):
+    def __init__(self, max_angle):
+        self.max_angle = max_angle
         self.read_configs()
         self.set_configs()
 
@@ -17,17 +18,21 @@ class Reward:
         self.velocity_weight = self.configs['velocity_weight']
         self.knock_penalty = self.configs['knock_penalty']
         self.over_pwm_penalty = self.configs['over_pwm_penalty']
+        self.under_pwm_penalty = self.configs['under_pwm_penalty']
         self.stability_reward = self.configs['stability_reward']
         self.stability_threshold = self.configs['stability_threshold']
 
     def position_reward(self, state: Dict) -> float:
-        position_error = -np.abs(state['position'])
-        position_reward = np.exp(5.0 * position_error)
+        position_reward = np.abs(state['position']) / self.max_angle
+        position_reward = np.round(position_reward, 3)
+        position_reward = np.clip(position_reward, 0.0, 1.0)
+        position_reward = -position_reward ** 2
         reward = self.position_weight * position_reward
+        reward = np.round(reward, 3)
         return reward
     
     def velocity_reward(self, state: Dict) -> float:
-        velocity_penalty = -np.abs(state['velocity'])
+        velocity_penalty = -abs(state['velocity']) ** 2
         reward = self.velocity_weight * velocity_penalty
         return reward
     
@@ -41,6 +46,11 @@ class Reward:
             return self.over_pwm_penalty
         return 0.0
 
+    def check_under_pwm(self, state: Dict) -> float:
+        if state['under_pwm']:
+            return self.under_pwm_penalty
+        return 0.0
+
     def check_stability(self, state: Dict) -> float:
         if (abs(state['position']) < self.stability_threshold and 
             abs(state['velocity']) < self.stability_threshold):
@@ -52,6 +62,7 @@ class Reward:
         reward += self.position_reward(state)
         reward += self.velocity_reward(state)
         reward += self.check_knock(state)
-        reward += self.check_over_pwm(state)
-        reward += self.check_stability(state)            
+        reward += self.check_stability(state)
+        # reward += self.check_over_pwm(state)
+        # reward += self.check_under_pwm(state)
         return reward

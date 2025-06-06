@@ -22,14 +22,15 @@ class State:
 
     def reset(self):
         self.time = np.int32(0)
-        self.position = np.random.choice([-self.max_angle, self.max_angle])
-        self.velocity = np.float32(0.0)
+        self.position = np.float32(np.random.uniform(-self.max_angle, self.max_angle))
+        self.velocity = np.float32(np.random.uniform(-1, 1))
         self.acceleration = np.float32(0.0)
-        self.left_pwm = np.float32(self.pwm_min)
-        self.right_pwm = np.float32(self.pwm_min)
+        self.left_pwm = self.pwm_min
+        self.right_pwm = self.pwm_min
 
         self.knock = False
         self.over_pwm = False
+        self.under_pwm = False
         self.done = False
 
     def get(self)->Dict:
@@ -42,6 +43,7 @@ class State:
             "right_pwm":self.right_pwm, 
             "knock":self.knock, 
             "over_pwm":self.over_pwm, 
+            "under_pwm":self.under_pwm,
             "done":self.done
         }
 
@@ -61,6 +63,13 @@ class State:
         else:
             state['over_pwm'] = False
         return state
+    
+    def _handle_under_pwm(self, state: Dict) -> Dict:
+        if state['left_pwm'] < self.pwm_min or state['right_pwm'] < self.pwm_min:
+            state['under_pwm'] = True
+        else:
+            state['under_pwm'] = False
+        return state
 
     def _handle_episode_time(self, state: Dict) -> Dict:
         if state['time'] > self.max_episode_time:
@@ -71,6 +80,7 @@ class State:
     def set(self, state: Dict):
         state = self._handle_knock(state)
         state = self._handle_over_pwm(state)
+        state = self._handle_under_pwm(state)
         state = self._handle_episode_time(state)
         for key in state.keys():
             setattr(self, key, state[key])

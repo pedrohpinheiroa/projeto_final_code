@@ -6,11 +6,6 @@ import tensorflow as tf
 import numpy as np
 from keras import layers, optimizers
 
-seed = 42
-np.random.seed(seed)
-tf.random.set_seed(seed)
-random.seed(seed)
-
 class Actor:
     """Rede neural do ator que mapeia estados para ações."""
     

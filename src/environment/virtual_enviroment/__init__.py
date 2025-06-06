@@ -1,4 +1,5 @@
 from typing import Tuple
+from src.visualization import SeesawVisualizer
 
 from .state import State
 from .physics import Physics
@@ -7,11 +8,12 @@ from .reward import Reward
 
 class Seesaw():
 
-    def __init__(self, state=None, physics=None, history=None, reward=None):
+    def __init__(self, state=None, physics=None, history=None, reward=None, visualizer: SeesawVisualizer = None):
         self.state = state or State()
         self.physics = physics or Physics()
         self.history = history or History()
-        self.reward = reward or Reward()
+        self.reward = reward or Reward(max_angle=self.state.max_angle)
+        self.visualizer = visualizer or SeesawVisualizer()
 
     def reset(self):
         self.state.reset()
@@ -39,9 +41,13 @@ class Seesaw():
         return self.history.get()
 
     def render(self):
-        pass
+        if self.visualizer:
+            state = self.get_state()
+            angle_rad = state['position']
+            self.visualizer.render(angle_rad=angle_rad, metrics_dict=state)
 
     def close(self):
-        pass
+        if self.visualizer:
+            self.visualizer.close()
 
 

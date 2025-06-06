@@ -37,7 +37,9 @@ class OUNoise:
         return self.state* self.decay_factor
 
     def decay(self):
-        if self.decay_factor == 0.1:
+        if self.decay_factor <= self.min_decay_factor:
+            if self.decay_factor != self.min_decay_factor:
+                self.decay_factor = self.min_decay_factor
             return
         
         self.decay_factor -= self.decay_rate

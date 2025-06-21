@@ -1,14 +1,21 @@
 import numpy as np
 from .metrics import Metrics
 from .writer import Writer
-
+from .hyperparameters import Hyperparameters
 
 class Logger:
 
-    def __init__(self):
+    def __init__(self, env, agent):
         self.writer = Writer()
         self.metrics = Metrics()
+        self.hyperparameters = Hyperparameters(env, agent)
         self.reset()
+        self.save_hyperparameters()
+    
+    def save_hyperparameters(self):
+        self.writer.write_hyperparameters(
+            self.hyperparameters.get_all()
+        )
 
     def reset(self):
         self.episode_data = {

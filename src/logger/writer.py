@@ -2,7 +2,7 @@ import json
 from time import time
 
 import tensorflow as tf
-
+from tensorboard.plugins.hparams import api as hp
 
 class Writer:
     '''Responsável por criar o summary_writer e atualiza-lo a cada passo.'''
@@ -27,3 +27,8 @@ class Writer:
             tf.summary.scalar(tag, value, step=episode)
             self.summary_writer.flush()
     
+    def write_hyperparameters(self, hyperparameters):
+        '''Escreve os hiperparâmetros no summary.'''
+        with self.summary_writer.as_default():
+            hp.hparams(hyperparameters)
+            self.summary_writer.flush()

@@ -1,7 +1,8 @@
 {
-    "position_weight": 1.0,
-    "velocity_weight": 0.5,
-    "knock_penalty": -50.0,
+    "position_weight": 10.0,
+    "velocity_weight": 5.0,
+    "torque_weight": 0.001,
+    "knock_penalty": -5.0,
     "over_pwm_penalty": -1.0,
     "under_pwm_penalty": -1.0,
     "stability_reward": 1.0,

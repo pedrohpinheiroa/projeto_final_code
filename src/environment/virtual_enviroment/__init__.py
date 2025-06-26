@@ -8,12 +8,12 @@ from .reward import Reward
 
 class Seesaw():
 
-    def __init__(self, state=None, physics=None, history=None, reward=None, visualizer: SeesawVisualizer = None):
-        self.state = state or State()
-        self.physics = physics or Physics()
-        self.history = history or History()
-        self.reward = reward or Reward(max_angle=self.state.max_angle)
-        self.visualizer = visualizer or SeesawVisualizer()
+    def __init__(self):
+        self.state = State()
+        self.physics = Physics(self.state.pwm_min, self.state.pwm_max)
+        self.history = History()
+        self.reward = Reward(max_angle=self.state.max_angle)
+        self.visualizer = SeesawVisualizer()
 
     def reset(self):
         self.state.reset()

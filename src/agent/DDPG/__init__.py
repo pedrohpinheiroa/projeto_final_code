@@ -3,8 +3,8 @@ import keras
 import numpy as np
 import tensorflow as tf
 from .buffer import ReplayBuffer
-from .noise import OUNoise
 from .model import Actor, Critic
+from src.utils.noise import OUNoise
 
 
 class Agent:
@@ -26,10 +26,8 @@ class Agent:
         self.buffer = ReplayBuffer()
         self.actor = Actor()
         self.critic = Critic()
-        self.noise = OUNoise(action_dimension=self.critic.action_dimension)
+        self.noise = OUNoise(action_dimension=self.critic.action_dimension, category='action')
         self.gamma = self.actor.gamma
-        
-        
 
     def reset(self):
         """

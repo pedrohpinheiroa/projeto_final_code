@@ -1,3 +1,4 @@
+import os
 import json
 import random
 
@@ -13,28 +14,32 @@ class Actor:
         self.read_configs()
         self.input_dimension = self.configs['input_dimension']
         self.action_dim = self.configs['action_dimension']
-        self.action_bound = self.configs['action_bound']
         self.hidden_layers = self.configs['actor_hidden_layers']
         self.tau = self.configs['polyak_averaging_tau']
+        self.gamma = self.configs['discount_factor']
 
         self.model = self._build_model()
         self.target_model = self._build_model()
         self.target_model.set_weights(self.model.get_weights())
-        self.optimizer = optimizers.Adam(self.configs['actor_learning_rate'])
+        self.learning_rate = self.configs['actor_learning_rate']
+        self.optimizer = optimizers.Adam(self.learning_rate)
 
     def read_configs(self):
         with open('configs/model.json', 'r') as file:
             self.configs = json.load(file)
 
     def _build_model(self):
+        # Initialize weights between -3e-3 and 3-e3
+        last_init = keras.initializers.RandomUniform(minval=-0.003, maxval=0.003)
+
         inputs = layers.Input(shape=(self.input_dimension,))
         x = inputs
         for units in self.hidden_layers:
             x = layers.Dense(units, activation='relu')(x)
 
         # Using sigmoid activation to get outputs between 0 and 1, then scaling
-        outputs = layers.Dense(self.action_dim, activation='sigmoid')(x)
-        outputs = outputs * self.action_bound + 0.1
+        outputs = layers.Dense(self.action_dim, activation='tanh', kernel_initializer=last_init)(x)
+        outputs = outputs
         
         model = keras.Model(inputs=inputs, outputs=outputs)
         return model
@@ -65,9 +70,15 @@ class Actor:
         
         self.target_model.set_weights(target_weights)
     
-    def save(self, base_filename):
+    def save(self, base_dir):
         """Salva os pesos do modelo."""
-        filename = f"{base_filename}_actor.weights.h5"
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir)
+        
+        if not base_dir.endswith('/'):
+            base_dir += '/'
+
+        filename = f"{base_dir}actor.weights.h5"
         self.model.save_weights(filename)
     
     def load(self, filename):
@@ -87,7 +98,9 @@ class Critic:
         self.action_hidden_layers = self.configs['critic_action_hidden_layers']
         self.hidden_layers = self.configs['critic_hidden_layers']
         self.tau = self.configs['polyak_averaging_tau']
-        self.optimizer = optimizers.Adam(self.configs['critic_learning_rate'])
+        self.learning_rate = self.configs['critic_learning_rate']
+        self.clip_gradients = self.configs['clip_gradients']
+        self.optimizer = optimizers.Adam(self.learning_rate)
 
         self.model = self._build_model()
         self.target_model = self._build_model()
@@ -170,11 +183,18 @@ class Critic:
         gradient_norm = tf.linalg.global_norm(gradients).numpy()
         return loss.numpy(), np.mean(q_values), gradient_norm
 
-    def save(self, base_filename):
+    def save(self, base_dir):
         """Salva os pesos do modelo."""
-        filename = f"{base_filename}_critic.weights.h5"
+        if not os.path.exists(base_dir):
+            os.makedirs(base_dir)
+        
+        if not base_dir.endswith('/'):
+            base_dir += '/'
+
+        filename = f"{base_dir}critic.weights.h5"
         self.model.save_weights(filename)
-    
+
+
     def load(self, filename):
         """Carrega os pesos do modelo."""
         self.model.load_weights(filename)

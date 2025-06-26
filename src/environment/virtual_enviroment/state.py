@@ -5,7 +5,7 @@ from typing import Dict
 
 class State:
 
-    def __init__(self, randomize_initial_state: bool = True):
+    def __init__(self, randomize_initial_state: bool):
         self.randomize_initial_state = randomize_initial_state
         self.read_configs()
         self.set_configs()
@@ -35,7 +35,7 @@ class State:
             self.velocity = np.float16(np.random.uniform(-1, 1))
 
         else:
-            self.position = np.float16(np.random.uniform(-self.max_angle, self.max_angle))
+            self.position = np.float16(np.random.choice([-self.max_angle, self.max_angle]))
             self.velocity = np.float16(0.0)
 
     def get(self)->Dict:

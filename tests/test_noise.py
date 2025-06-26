@@ -16,11 +16,13 @@ if __name__ == "__main__":
 
     max_norm = 0.0 
     norm_sum = 0.0 
-    norms = []     
+    norms = []
+    samples = []
 
     total_iterations = 500
     for i in range(total_iterations):
         sample = noise.sample()
+        samples.append(sample[0])
         norm = np.linalg.norm(sample)
         norm_sum += norm  
         norms.append(norm)
@@ -40,7 +42,7 @@ if __name__ == "__main__":
     print("Desvio padrão do módulo dos ruídos: {:.6f}".format(std_norm))
 
     plt.figure(figsize=(10, 6))
-    plt.plot(range(1, total_iterations + 1), norms, marker='o')
+    plt.plot(range(1, total_iterations + 1), samples, marker='o')
     plt.title('Iteração x Valor do Ruído (Norma)')
     plt.xlabel('Iteração')
     plt.ylabel('Norma do Ruído')

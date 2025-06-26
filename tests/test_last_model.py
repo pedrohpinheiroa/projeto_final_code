@@ -24,22 +24,16 @@ def get_last_model_path():
     return os.path.join(BASEDIR, last_trained_model, 'actor.weights.h5')
 
 def main():
-    env = Seesaw()
+    env = Seesaw(randomize_initial_state=False)
     agent = Agent()
-    env.physics.time_step = 20
     agent.actor.load(get_last_model_path())
-
     env.reset()
-    env.state.position = -0.35
-    env.state.velocity = 0.0
     env.render()
     while True:
         action, _ = agent.act(env.get_state(), add_noise=True)
         env.step(action)
-        error = np.random.uniform(0, 1)
-        if error > 0.7:
-            env.state.velocity += 0.15 * np.random.choice([-1, 1])
         env.render()
+
 
 if __name__ == "__main__":
     with tf.device('/CPU:0'):

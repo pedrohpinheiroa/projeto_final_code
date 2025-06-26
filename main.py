@@ -1,3 +1,4 @@
+import os
 import time
 
 import numpy as np
@@ -7,37 +8,35 @@ from src.environment.virtual_enviroment import Seesaw
 from src.agent.DDPG import Agent
 from src.logger import Logger
 
-def _render_current_model(agent):
-    env = Seesaw()
-    env.reset()
-    env.render()
-    while not env.is_done():
-        action, _ = agent.act(env.get_state(), add_noise=False)
-        env.step(action)
-        env.render()
-    print(f"Final Position: {env.get_state()['position']:.4f}, Final Velocity: {env.get_state()['velocity']:.4f}, Final Time: {env.get_state()['time']:.4f}")
-    env.close()
 
 def main():
-    RENDER_SIMULATION = False
-    RENDER_EVERY = 100
-    EPISODES = 50_000
+    RENDER_SIMULATION = True
+    EPISODES = 50
 
-    env = Seesaw()
+    env = Seesaw(randomize_initial_state=False)
     agent = Agent()
-    logger = Logger()
+    logger = Logger(env, agent)
+
     for episode in range(EPISODES):
+        if episode % 2 == 0:
+            env.state.randomize_initial_state = True
+        else:
+            env.state.randomize_initial_state = False
+        
+        episode_reward = 0.0
         episode_start = time.time()
         env.reset()
-        
         while not env.is_done():
             state = env.get_state()
             action, noise = agent.act(state)
             env.step(action)
             reward = env.get_reward()
+            episode_reward += reward
             next_state = env.get_state()
             done = env.is_done()
             critic_loss, critic_gradient, predict_q, target_q, actor_loss, actor_gradient = agent.learn()
+            if RENDER_SIMULATION:
+                env.render()
             
             env.save_in_history(state)
             agent.add_experience(state, action, reward, next_state, done)
@@ -62,17 +61,13 @@ def main():
             virtual_episode_duration = next_state['time'],
         )
         logger.reset()
-        agent.decay_noise()
-        
-        print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s. Total Virtual Time: {state['time']/1000:.4f}s Final Position: {state['position']:.4f}", end=("\n"))
-        if RENDER_SIMULATION and episode % RENDER_EVERY == 0:
-            print("Rendering current model...")
-            _render_current_model(agent)
-            print("Rendering completed.")
 
-        agent.save("current_model_training")
+        if episode == 0:
+            os.system("cls" if os.name == "nt" else "clear")
+
+        print(f"Episode {episode} finished. Time: {time.time() - episode_start:.2f}s. Episode Reward: {episode_reward}", end=("\n"))
+        agent.save(f"{logger.get_name()}/")
 
 if __name__ == "__main__":
     with tf.device('/CPU:0'):
         main()
-    # main()

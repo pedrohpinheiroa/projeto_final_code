@@ -8,8 +8,8 @@ from .reward import Reward
 
 class Seesaw():
 
-    def __init__(self):
-        self.state = State()
+    def __init__(self, randomize_initial_state: bool = True):
+        self.state = State(randomize_initial_state=randomize_initial_state)
         self.physics = Physics(self.state.pwm_min, self.state.pwm_max)
         self.history = History()
         self.reward = Reward(max_angle=self.state.max_angle)

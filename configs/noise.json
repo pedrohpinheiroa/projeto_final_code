@@ -1,10 +1,7 @@
 {
-    "ou_noise": {
+    "action": {
         "theta": 0.15,
         "mu": 0,
-        "sigma": 0.2,
-        "inicial_decay_factor":1.0,
-        "min_decay_factor": 0.01,
-        "iterations_to_minimum": 10000
+        "sigma": 0.2
     }
 }

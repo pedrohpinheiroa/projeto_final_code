@@ -5,11 +5,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import numpy as np
 import matplotlib.pyplot as plt
 
-from src.agent.DDPG.noise import OUNoise
+from src.utils.noise import OUNoise
 
 if __name__ == "__main__":
     action_dimension = 1
-    noise = OUNoise(action_dimension)
+    noise = OUNoise(action_dimension, category='action')
     noise.reset()
 
     print("Testando magnitude do ruído Ornstein-Uhlenbeck:")

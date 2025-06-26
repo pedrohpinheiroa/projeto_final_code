@@ -17,6 +17,9 @@ class Logger:
             self.hyperparameters.get_all()
         )
 
+    def get_name(self):
+        return self.writer.name
+
     def reset(self):
         self.episode_data = {
             'reward':np.array([]),

@@ -28,9 +28,6 @@ class Hyperparameters:
             'noise_mu': self.agent.noise.mu,
             'noise_theta': self.agent.noise.theta,
             'noise_sigma': self.agent.noise.sigma,
-            'noise_initial_decay_factor': self.agent.noise.decay_factor,
-            'noise_min_decay_factor': self.agent.noise.min_decay_factor,
-            'noise_iterations_to_minimum': self.agent.noise.iterations_to_minimum,
         }
         return noise_hyperparameters
     

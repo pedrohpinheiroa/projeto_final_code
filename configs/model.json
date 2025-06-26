@@ -1,13 +1,24 @@
 {
-    "input_dimension": 2,
-    "action_dimension": 1,
-    "clip_gradients": false,
-    "discount_factor": 0.99,
-    "polyak_averaging_tau":0.005,
-    "actor_learning_rate":0.001,
-    "critic_learning_rate":0.002,
-    "actor_hidden_layers":[256, 256],
-    "critic_state_hidden_layers":[16, 32],
-    "critic_action_hidden_layers":[32],
-    "critic_hidden_layers":[256, 256]
+    "DDPG":{
+        "input_dimension": 2,
+        "action_dimension": 1,
+        "clip_gradients": false,
+        "discount_factor": 0.99,
+        "polyak_averaging_tau":0.005,
+        "actor_learning_rate":0.001,
+        "critic_learning_rate":0.002,
+        "actor_hidden_layers":[256, 256],
+        "critic_state_hidden_layers":[16, 32],
+        "critic_action_hidden_layers":[32],
+        "critic_hidden_layers":[256, 256]
+    },
+    "PID":{
+        "Kp": null,
+        "Ki": null,
+        "Kd": null,
+        "setpoint": 0.0,
+        "output_min": -1.0,
+        "output_max": 1.0,
+        "integral_decay": 0.95
+    }
 }

@@ -31,7 +31,7 @@ class Agent:
 
     def reset(self):
         """
-        Reseta o ruído do agente.
+        Reseta o ruído.
         """
         self.noise.reset()
 

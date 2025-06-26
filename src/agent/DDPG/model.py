@@ -27,6 +27,7 @@ class Actor:
     def read_configs(self):
         with open('configs/model.json', 'r') as file:
             self.configs = json.load(file)
+        self.configs = self.configs['DDPG']
 
     def _build_model(self):
         # Initialize weights between -3e-3 and 3-e3
@@ -109,6 +110,7 @@ class Critic:
     def read_configs(self):
         with open('configs/model.json', 'r') as file:
             self.configs = json.load(file)
+        self.configs = self.configs['DDPG']
 
     def _build_model(self):
         # Entrada de estado

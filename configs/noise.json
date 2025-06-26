@@ -1,7 +1,7 @@
 {
     "action": {
-        "theta": 0.15,
+        "theta": 0.2,
         "mu": 0,
-        "sigma": 0.15
+        "sigma": 0.1
     }
 }

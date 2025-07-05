@@ -13,9 +13,9 @@
         "critic_hidden_layers":[256, 256]
     },
     "PID":{
-        "Kp": null,
-        "Ki": null,
-        "Kd": null,
+        "Kp": 61.23,
+        "Ki": 0.0,
+        "Kd": 15.34,
         "setpoint": 0.0,
         "output_min": -1.0,
         "output_max": 1.0,

@@ -36,13 +36,6 @@ class Controller:
         integral_value = self.Ki * self.integral
         derivative_value = self.Kd * (-velocity)
 
-        output_unbounded =  proporcional_value + integral_value + derivative_value
-        output = np.clip(output_unbounded, self.output_min, self.output_max)
-
-        if output_unbounded != output:
-            is_saturated_high = output_unbounded > self.output_max and error > 0
-            is_saturated_low = output_unbounded < self.output_min and error < 0
-            if is_saturated_high or is_saturated_low:
-                self.integral *= self.integral_decay
-
+        output =  proporcional_value + integral_value + derivative_value
+        output = np.clip(output, self.output_min, self.output_max)
         return np.array([output], dtype=np.float32)

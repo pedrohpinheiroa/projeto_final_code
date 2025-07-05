@@ -1,6 +1,11 @@
+import logging
+
 import numpy as np
+
 from .model import  Controller
 from src.utils.noise import OUNoise
+from src.environment.virtual_enviroment import Seesaw
+
 
 class Agent:
 
@@ -42,4 +47,3 @@ class Agent:
         action = np.clip(action, self.controller.output_min, self.controller.output_max)
         action = np.round(action, 4)
         return action, noise
-       

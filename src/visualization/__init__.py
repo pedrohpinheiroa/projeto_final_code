@@ -50,6 +50,7 @@ class SeesawVisualizer:
         self.setpoint_slider = SetPointSlider(x=self.window.width-320, y=20)
         self.bg_color = (240, 240, 240)
         self.include_setpoint_slider = include_setpoint_slider
+        self.clock = pygame.time.Clock()  # Adiciona o clock
 
     def render(self, angle_rad=0.0, metrics_dict=None):
         if not self.window.screen:
@@ -69,6 +70,7 @@ class SeesawVisualizer:
             self.setpoint_slider.draw(self.window.screen)
         
         self.window.update()
+        self.clock.tick(20)  # Limita a 30 FPS
 
     def close(self):
         self.window.close()

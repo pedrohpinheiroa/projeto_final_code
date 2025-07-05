@@ -22,7 +22,7 @@ class Seesaw():
     def get_state(self):
         return self.state.get()
 
-    def step(self, action: Tuple[float, float]):
+    def step(self, action: Tuple[float]):
         state = self.get_state()
         new_state = self.physics.apply_action(state, action)
         self.state.set(new_state)

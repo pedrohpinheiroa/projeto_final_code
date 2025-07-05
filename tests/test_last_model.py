@@ -22,6 +22,7 @@ def _get_last_model_path():
 
 def main():
     env = Seesaw(randomize_initial_state=False)
+    env.visualizer.include_setpoint_slider = True
     agent = Agent()
     agent.actor.load(_get_last_model_path())
     env.reset()

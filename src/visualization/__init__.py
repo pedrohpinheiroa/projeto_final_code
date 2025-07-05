@@ -43,17 +43,13 @@ class SeesawVisualizer:
     Visualizador para o ambiente Seesaw, recebe componentes de janela, barra e métricas.
     Agora inclui slider de setpoint.
     """
-    def __init__(self, window: Window=None, bar: SeesawBar=None, metrics: Metrics=None, bg_color=(240, 240, 240), setpoint_slider: SetPointSlider = None):
-        self.window = window or Window()
-        self.bar = bar or SeesawBar(center=(self.window.width // 2, self.window.height // 2))
-        self.metrics = metrics or Metrics()
-        self.bg_color = bg_color
-        # Slider de setpoint
-        if setpoint_slider is None:
-            # Posição padrão do slider
-            self.setpoint_slider = SetPointSlider(x=self.window.width-320, y=20)
-        else:
-            self.setpoint_slider = setpoint_slider
+    def __init__(self, include_setpoint_slider=False):
+        self.window = Window()
+        self.bar = SeesawBar(center=(self.window.width // 2, self.window.height // 2))
+        self.metrics = Metrics()
+        self.setpoint_slider = SetPointSlider(x=self.window.width-320, y=20)
+        self.bg_color = (240, 240, 240)
+        self.include_setpoint_slider = include_setpoint_slider
 
     def render(self, angle_rad=0.0, metrics_dict=None):
         if not self.window.screen:
@@ -62,12 +58,16 @@ class SeesawVisualizer:
             if event.type == pygame.QUIT:
                 self.window.close()
                 return
-            self.setpoint_slider.handle_event(event)
+            if self.include_setpoint_slider:
+                self.setpoint_slider.handle_event(event)
         self.window.fill(self.bg_color)
         self.bar.draw(self.window.screen, angle_rad)
         if metrics_dict:
             self.metrics.draw(self.window.screen, metrics_dict)
-        self.setpoint_slider.draw(self.window.screen)
+        
+        if self.include_setpoint_slider:
+            self.setpoint_slider.draw(self.window.screen)
+        
         self.window.update()
 
     def close(self):

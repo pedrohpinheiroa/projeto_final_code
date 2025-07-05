@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+import numpy as np
 import tensorflow as tf
 
 from src.environment.virtual_enviroment import Seesaw
@@ -26,7 +27,11 @@ def main():
     env.reset()
     env.render()
     while True:
-        action, _ = agent.act(env.get_state(), add_noise=False)
+        set_point = env.visualizer.setpoint_slider.get_value()
+        transformed_state = env.get_state()
+        transformed_state['position'] = transformed_state['position'] - set_point
+        transformed_state['position'] = np.clip(transformed_state['position'], -0.35, 0.35)
+        action, _ = agent.act(transformed_state, add_noise=False)
         env.step(action)
         env.render()
 

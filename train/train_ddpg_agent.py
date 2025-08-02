@@ -13,26 +13,28 @@ from src.logger import Logger
 
 
 def main():
-    RENDER_SIMULATION = True
-    EPISODES = 50
+    RENDER_SIMULATION = False
+    EPISODES = 1000
 
     env = Seesaw(randomize_initial_state=False)
     agent = Agent()
     logger = Logger(env, agent)
 
+    add_noise = True
     for episode in range(EPISODES):
-        if episode % 2 == 0:
-            env.state.randomize_initial_state = True
-        else:
-            env.state.randomize_initial_state = False
         
         episode_reward = 0.0
         episode_start = time.time()
         env.reset()
         while not env.is_done():
+            if episode % 50 == 0 and episode > 0:
+                agent.critic.optimizer.learning_rate *= 0.5
+                agent.actor.optimizer.learning_rate *= 0.5
+
             state = env.get_state()
-            action, noise = agent.act(state)
+            action, noise = agent.act(state, add_noise=add_noise)
             env.step(action)
+            agent.decay_noise()
             reward = env.get_reward()
             episode_reward += reward
             next_state = env.get_state()

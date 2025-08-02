@@ -16,16 +16,26 @@ class OUNoise:
         self.configs = self.configs[category]
 
     def set_configs(self):
+        self.multiplier = 1.0
         self.mu = self.configs['mu']
         self.theta = self.configs['theta']
         self.sigma = self.configs['sigma']
+        self.min_multiplier = self.configs['min_multiplier']
+        self.iterations_to_minimum_multiplier = self.configs['iterations_to_minimum_multiplier']
+        self.decay_rate = (self.multiplier - self.min_multiplier) / self.iterations_to_minimum_multiplier
         self.reset()
 
     def reset(self):
         self.state = np.ones(self.action_dimension) * self.mu
+
+    def decay(self):
+        if self.multiplier > self.min_multiplier:
+            self.multiplier -= self.decay_rate
+        else:
+            self.multiplier = self.min_multiplier
     
     def sample(self):
         x = self.state
         dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(len(x))
         self.state = x + dx
-        return self.state
+        return self.state * self.multiplier

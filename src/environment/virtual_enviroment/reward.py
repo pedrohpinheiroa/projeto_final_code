@@ -18,8 +18,6 @@ class Reward:
         self.velocity_weight = self.configs['velocity_weight']
         self.torque_weight = self.configs['torque_weight']
         self.knock_penalty = self.configs['knock_penalty']
-        self.over_pwm_penalty = self.configs['over_pwm_penalty']
-        self.under_pwm_penalty = self.configs['under_pwm_penalty']
         self.stability_reward = self.configs['stability_reward']
         self.stability_threshold = self.configs['stability_threshold']
 
@@ -32,7 +30,6 @@ class Reward:
     
     def velocity_reward(self, state: Dict) -> float:
         normalized_position = state['position'] / self.max_angle
-
         velocity = np.clip(state['velocity'],-1, 1)
         cos_factor = (normalized_position/ self.max_angle) + velocity
         cos_factor = abs(cos_factor)
@@ -53,7 +50,7 @@ class Reward:
     def check_stability(self, state: Dict) -> float:
         if (abs(state['position']) <= self.stability_threshold and 
             abs(state['velocity']) <= self.stability_threshold):
-            return self.stability_reward
+            return self.stability_reward*(1-abs(state['position']))
         return 0.0
 
     def get(self, state: Dict) -> float:

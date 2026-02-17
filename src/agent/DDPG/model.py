@@ -7,10 +7,18 @@ import tensorflow as tf
 import numpy as np
 from keras import layers, optimizers
 
+def set_random_seed(seed=42):
+    """Define as sementes para reprodutibilidade."""
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+    tf.random.set_seed(seed)
+
 class Actor:
     """Rede neural do ator que mapeia estados para ações."""
     
-    def __init__(self):
+    def __init__(self, seed=42):
+        set_random_seed(seed)  # Define a semente para reprodutibilidade
         self.read_configs()
         self.input_dimension = self.configs['input_dimension']
         self.action_dim = self.configs['action_dimension']
@@ -91,7 +99,8 @@ class Actor:
 class Critic:
     """Rede neural do crítico que estima o Q-valor dado um estado e uma ação."""
     
-    def __init__(self):
+    def __init__(self, seed=42):
+        set_random_seed(seed)  # Define a semente para reprodutibilidade
         self.read_configs()
         self.input_dimension = self.configs['input_dimension']
         self.action_dimension = self.configs['action_dimension']

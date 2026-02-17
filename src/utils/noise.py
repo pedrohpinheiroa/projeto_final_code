@@ -17,6 +17,7 @@ class OUNoise:
 
     def set_configs(self):
         self.multiplier = 1.0
+        self.dt = self.configs['dt']
         self.mu = self.configs['mu']
         self.theta = self.configs['theta']
         self.sigma = self.configs['sigma']
@@ -36,6 +37,6 @@ class OUNoise:
     
     def sample(self):
         x = self.state
-        dx = self.theta * (self.mu - x) + self.sigma * np.random.randn(len(x))
+        dx = self.theta * (self.mu - x) * self.dt + self.sigma * np.random.randn(len(x)) * np.sqrt(self.dt)
         self.state = x + dx
         return self.state * self.multiplier

@@ -120,8 +120,9 @@ def run_experiment(scenario:str):
     save_experiment_plots(ddpg_data, pid_data, scenario)
     print(f"Total DDPG Reward: {total_ddpg_reward}")
     print(f"Total PID Reward: {total_pid_reward}")
+
+
 if __name__ == "__main__":
     import tensorflow as tf
     with tf.device('/CPU:0'):
-        while True:
-            run_experiment("")
+        run_experiment("")

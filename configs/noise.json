@@ -1,8 +1,9 @@
 {
     "action": {
-        "theta": 0.2,
+        "dt":0.05,
+        "theta": 0.15,
         "mu": 0,
-        "sigma": 0.1,
+        "sigma": 0.2,
         "min_multiplier": 0.01,
         "iterations_to_minimum_multiplier": 10000
     }

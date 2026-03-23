@@ -1,0 +1,46 @@
+Objetivo Real: O CP queria que alguém abrisse as portas na área dentro do LAVI.
+
+Objetivo:
+  - Iniciar os estudos na área dentro da Poli
+  - Expandir a gama de controladores, buscando maiores aplicações e adaptabilidade/flexibilidade
+
+_________________________________________________________________________
+
+Acho que a construção do meu trabalho deve ser mais de cunho acadêmico que profissional.
+  - Na industria, isso seria um processo caro. Tanto em HH quanto em equipamento. Mas, na acadeima,
+  vai abrir portas. E, pra eu quanto acadêmico, crio um campo de trabalho/pesquisa muito interessante
+  pra mecânica da poli.
+
+Levantar que o RL não é o novo jesus cristo. Mas que, em determinadas situações mais complexas,
+ele pode surgir como uma alternativa viável.
+
+Meu projeto é um "problema inverso"
+
+**** Lembrar de não chamar de Digital Twin.
+_________________________________________________________________________
+
+
+Contra indicações do PID:
+  - Sistema com dinâmica Não linear ou altamente variável
+    - Robôs bípedes ou que mudam de carga frequentemente
+    - Sistemas que possuem prorpiedades físicas oscilantes e/ou variáveis.
+  - O PID sempre reage a informações do passado.
+  - Ambientes com ruido alto são amplificados.
+  - Sistemas com muitos graus de liberdade
+
+RL:
+  - Sistemas não lineares
+
+_________________________________________________________________________
+Colocar um random na velocidade pra simular oscilações no sistema.
+Colocar um random na posição pra simular oscilações no sistema.
+Colocar um random na ação pra simular ruido no sistema.
+Posso implementar o ruido browniano
+
+_________________________________________________________________________
+Próximos Passos:
+1) Modelar e Calibrar o PID
+2) Modelar um sistema de testes
+  - Modificar parâmetros
+  - Gerar Logs
+3) Pensar em casos de teste

@@ -17,3 +17,23 @@
 
 https://spinningup.openai.com/en/latest/algorithms/ddpg.html#id5
 https://pt.wikipedia.org/wiki/Processo_Ornstein%E2%80%93Uhlenbeck
+
+
+
+
+
+
+
+
+
+
+Estrutura do Projeto de Graduação:
+1- Introdução
+  1- Motivação
+  2- Objetivos
+  3- Metodologia
+  4- Organização do Projeto
+  
+2- Revisão Bibliográfica
+3- Metodologias
+4- Resultados e Conclusões
